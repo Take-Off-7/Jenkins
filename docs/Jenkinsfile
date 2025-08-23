@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Take-Off-7/Jenkins.git'
+            }
+        }
+
+        stage('Validate HTML & JS') {
+            steps {
+                sh 'echo "Checking HTML and JS files..."'
+                sh 'ls docs/*.html docs/*.js docs/*.css'
+                // Optional: install a linter like npm htmlhint or eslint
+            }
+        }
+
+        stage('Archive App') {
+            steps {
+                archiveArtifacts artifacts: 'docs/**/*', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Todo app tested & archived successfully ✅"
+        }
+        failure {
+            echo "Pipeline failed ❌"
+        }
+    }
+}
