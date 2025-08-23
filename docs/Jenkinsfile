@@ -13,9 +13,9 @@ pipeline {
             steps {
                 bat '''
                     echo Checking required files exist...
-                    if not exist docs\\index.html (echo WARNING: Missing index.html) || exit /b 0
-                    if not exist docs\\style.css (echo WARNING: Missing style.css) || exit /b 0
-                    if not exist docs\\script.js (echo WARNING: Missing script.js) || exit /b 0
+                    if not exist docs\\index.html (echo WARNING: Missing index.html)
+                    if not exist docs\\style.css (echo WARNING: Missing style.css)
+                    if not exist docs\\script.js (echo WARNING: Missing script.js)
                     echo File check complete.
                 '''
             }
@@ -23,41 +23,49 @@ pipeline {
 
         stage('Basic Quality Check') {
             steps {
-                bat '''
-                    echo Performing simple code checks...
-                    findstr /C:"console.log" docs\\script.js >nul || echo WARNING: Could not open or no console.log found
-                    echo Quality check complete.
-                '''
+                script {
+                    // run findstr but don't fail pipeline if it errors
+                    def status = bat(
+                        script: 'findstr /C:"console.log" docs\\script.js >nul',
+                        returnStatus: true
+                    )
+                    if (status != 0) {
+                        echo "WARNING: No console.log found in script.js (or file missing)."
+                    }
+                }
             }
         }
 
         stage('Build') {
             steps {
-                bat '''
-                    echo Building application...
-                    REM put your build commands here
-                    echo Build step complete.
-                ''' || exit /b 0
+                script {
+                    def status = bat(script: 'echo Building app...', returnStatus: true)
+                    if (status != 0) {
+                        echo "WARNING: Build step had an issue but continuing..."
+                    }
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat '''
-                    echo Running tests...
-                    REM put your test commands here
-                    echo Tests complete.
-                ''' || exit /b 0
+                script {
+                    def status = bat(script: 'echo Running tests...', returnStatus: true)
+                    if (status != 0) {
+                        echo "WARNING: Test step had an issue but continuing..."
+                    }
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                bat '''
-                    echo Deploying application...
-                    REM put your deploy commands here
-                    echo Deployment complete.
-                ''' || exit /b 0
+                script {
+                    def status = bat(script: 'echo Deploying app...', returnStatus: true)
+                    if (status != 0) {
+                        echo "WARNING: Deploy step had an issue but continuing..."
+                    }
+                }
             }
         }
     }
