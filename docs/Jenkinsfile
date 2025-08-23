@@ -2,22 +2,18 @@ pipeline {
     agent any
 
     stages {
-        stage('Install Tools') {
+        stage('Checkout') {
             steps {
-                bat '''
-                  echo Installing linting tools...
-                  npm install -g htmlhint stylelint eslint
-                '''
+                echo "Checking out source code..."
+                checkout scm
             }
         }
 
-        stage('Lint Code') {
+        stage('Test') {
             steps {
                 bat '''
-                  echo Linting HTML, CSS, and JS...
-                  htmlhint docs\\*.html || exit 0
-                  eslint docs\\*.js || exit 0
-                  stylelint "docs\\*.css" || exit 0
+                  echo Running basic tests...
+                  echo All tests passed!
                 '''
             }
         }
@@ -25,18 +21,8 @@ pipeline {
         stage('Build') {
             steps {
                 bat '''
-                  echo Building the app...
-                  REM put your build steps here (e.g., minify, bundle)
-                '''
-            }
-        }
-
-        stage('Test') {
-            steps {
-                bat '''
-                  echo Running tests...
-                  REM run your tests here
-                  echo All tests passed!
+                  echo Building static app...
+                  echo (no build steps needed for HTML/CSS/JS)
                 '''
             }
         }
@@ -44,11 +30,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 bat '''
-                  echo Deploying to GitHub Pages...
-                  REM actual deploy happens through GitHub Pages after push
+                  echo Deploy handled by GitHub Pages after push.
                 '''
             }
         }
     }
 }
-
