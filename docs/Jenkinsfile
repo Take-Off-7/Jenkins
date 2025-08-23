@@ -4,16 +4,33 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "Checking out source code..."
+                echo "Fetching latest code from GitHub..."
                 checkout scm
             }
         }
 
-        stage('Test') {
+        stage('Verify Files') {
             steps {
                 bat '''
-                  echo Running basic tests...
-                  echo All tests passed!
+                  echo Checking required files exist...
+                  if not exist docs\\index.html (echo WARNING: Missing index.html)
+                  if not exist docs\\style.css (echo WARNING: Missing style.css)
+                  if not exist docs\\app.js (echo WARNING: Missing app.js)
+                  echo File check complete.
+                '''
+            }
+        }
+
+        stage('Basic Quality Check') {
+            steps {
+                bat '''
+                  echo Performing simple code checks...
+                  findstr /C:"console.log" docs\\app.js >nul
+                  if %errorlevel%==0 (
+                      echo WARNING: console.log statements found in app.js
+                  ) else (
+                      echo No console.log statements found.
+                  )
                 '''
             }
         }
@@ -21,18 +38,37 @@ pipeline {
         stage('Build') {
             steps {
                 bat '''
-                  echo Building static app...
-                  echo (no build steps needed for HTML/CSS/JS)
+                  echo Simulating build step...
+                  echo (Nothing to compile for HTML/CSS/JS static app)
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat '''
+                  echo Running basic smoke tests...
+                  findstr /C:"<title>" docs\\index.html >nul
+                  if %errorlevel%==0 (
+                      echo Title tag found. Good.
+                  ) else (
+                      echo WARNING: No <title> tag found in index.html
+                  )
+                  echo Smoke tests complete.
                 '''
             }
         }
 
         stage('Deploy') {
             steps {
-                bat '''
-                  echo Deploy handled by GitHub Pages after push.
-                '''
+                echo "Deploy handled by GitHub Pages after push. Nothing to do here."
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline finished ✅ (no hard failures)."
         }
     }
 }
