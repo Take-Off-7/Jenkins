@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Install Tools') {
             steps {
-                sh '''
-                  echo "Installing linting tools..."
+                bat '''
+                  echo Installing linting tools...
                   npm install -g htmlhint stylelint eslint
                 '''
             }
@@ -13,39 +13,39 @@ pipeline {
 
         stage('Lint Code') {
             steps {
-                sh '''
-                  echo "Linting HTML, CSS, and JS..."
-                  htmlhint docs/*.html || true
-                  eslint docs/*.js || true
-                  stylelint "docs/*.css" || true
+                bat '''
+                  echo Linting HTML, CSS, and JS...
+                  htmlhint docs\\*.html || exit 0
+                  eslint docs\\*.js || exit 0
+                  stylelint "docs\\*.css" || exit 0
                 '''
             }
         }
 
         stage('Build') {
             steps {
-                sh '''
-                  echo "Building the app..."
-                  # put your build steps here (e.g., minify, bundle)
+                bat '''
+                  echo Building the app...
+                  REM put your build steps here (e.g., minify, bundle)
                 '''
             }
         }
 
         stage('Test') {
             steps {
-                sh '''
-                  echo "Running tests..."
-                  # run your tests here
-                  echo "All tests passed!"
+                bat '''
+                  echo Running tests...
+                  REM run your tests here
+                  echo All tests passed!
                 '''
             }
         }
 
         stage('Deploy') {
             steps {
-                sh '''
-                  echo "Deploying to GitHub Pages..."
-                  # actual deploy happens through GitHub Pages after push
+                bat '''
+                  echo Deploying to GitHub Pages...
+                  REM actual deploy happens through GitHub Pages after push
                 '''
             }
         }
