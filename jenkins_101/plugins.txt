@@ -1,0 +1,9 @@
+blueocean
+docker-workflow
+git
+github
+pipeline-github-lib
+pipeline-graph-view
+credentials
+ssh-credentials
+workflow-aggregator
