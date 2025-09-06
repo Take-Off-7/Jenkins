@@ -7,5 +7,5 @@ pipeline-graph-view
 credentials
 ssh-credentials
 workflow-aggregator
-docker
-maven
+docker-plugin
+maven-plugin

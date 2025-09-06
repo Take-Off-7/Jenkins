@@ -15,7 +15,8 @@ docker run --name jenkins-blueocean \
   -p 8080:8080 \
   -p 50000:50000 \
   -v jenkins-data:/var/jenkins_home \
-  myjenkins-blueocean:2.414.2rts/client:ro \
+  -v jenkins-docker-certs:/certs/client:ro \
+  myjenkins-blueocean:2.414.2
 
 # Get the Password
 docker exec jenkins-blueocean cat /var/jenkins_home/secrets/initialAdminPassword
