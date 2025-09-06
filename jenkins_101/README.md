@@ -40,5 +40,5 @@ Docker Host URI: tcp://172.17.0.1:2375
 # Docker image
 jenkins/agent:alpine-jdk11
 # Docker image with python installed
-takeoff7/jenkins-agent 
+takeoff7/jenkins-agent:latest
 
